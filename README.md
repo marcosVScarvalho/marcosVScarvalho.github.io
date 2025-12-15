@@ -1,16 +1,18 @@
-## Hi there 👋
+# coaglio site
 
-<!--
-**marcosVScarvalho/marcosVScarvalho** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+Personal website built with pure HTML and CSS, featuring custom animations, a dark aesthetic, and a fully responsive layout.
 
-Here are some ideas to get you started:
+This project does not rely on any external frameworks or theme engines. All layout, styling, and motion effects were handcrafted to maintain full control over the visual identity and performance.
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+The main structure of the project is as follows:
+
+```
+❯ tree  
+.
+├── CNAME
+├── cpts.png
+├── index.html
+├── README.md
+├── skull.gif
+└── styles.css
+```
