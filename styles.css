@@ -69,10 +69,19 @@ body {
 .logo {
   font-family: "Press Start 2P", system-ui, monospace;
   font-size: 1.9rem;
-  letter-spacing: 0.12em;
-  text-transform: lowercase;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   position: relative;
   animation: logoGlow 5s ease-in-out infinite;
+}
+
+.logo .dollar {
+  display: inline-block;
+  font-family: inherit;
+  line-height: 1;
+  font-size: 0.98em; /* tuned to better match uppercase glyph height */
+  transform: translateY(0.02em) scale(0.99);
+  letter-spacing: 0.02em;
 }
 
 .tagline {
@@ -103,6 +112,11 @@ body {
 @media (max-width: 540px) {
   .logo {
     font-size: 1.4rem;
+  }
+
+  .logo .dollar {
+    font-size: 0.99em;
+    transform: translateY(0.01em) scale(0.99);
   }
 
   .skull {
