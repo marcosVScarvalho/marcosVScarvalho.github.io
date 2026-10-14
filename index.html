@@ -5,7 +5,14 @@
     <meta charset="UTF-8">
     <title>Offensive security portfolio</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="color-scheme" content="dark">
+    <meta name="color-scheme" content="dark light">
+    <script>
+        try {
+            if (localStorage.getItem("theme") === "light") {
+                document.documentElement.dataset.theme = "light";
+            }
+        } catch (e) { }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -25,12 +32,37 @@
 
             --grad: linear-gradient(180deg, #ffffff 0%, #d4d4d8 45%, #7a7a82 100%);
             --grad-side: linear-gradient(90deg, #ffffff 0%, #9a9aa2 100%);
+            --fill: linear-gradient(90deg, #4a4a50, #ffffff);
+            --glow: rgba(255, 255, 255, 0.07);
+            --dot-glow: rgba(255, 255, 255, 0.5);
+            --grain-opacity: 0.06;
+            color-scheme: dark;
 
             --display: "Chakra Petch", "Segoe UI", system-ui, sans-serif;
             --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
             --mono: "IBM Plex Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
 
             --cert-progress: 0%;
+        }
+
+        /* Tema claro: as mesmas variáveis com as cores invertidas */
+        html[data-theme="light"] {
+            --void: #ffffff;
+            --panel: #f3f3f1;
+            --line: #e0e0dc;
+            --line-strong: #d1d1cc;
+            --ash: #6e6e76;
+            --smoke: #5c5c54;
+            --bone: #131310;
+            --white: #000000;
+
+            --grad: linear-gradient(180deg, #000000 0%, #2b2b27 45%, #85857d 100%);
+            --grad-side: linear-gradient(90deg, #000000 0%, #65655d 100%);
+            --fill: linear-gradient(90deg, #b5b5af, #000000);
+            --glow: rgba(0, 0, 0, 0.05);
+            --dot-glow: rgba(0, 0, 0, 0.35);
+            --grain-opacity: 0.04;
+            color-scheme: light;
         }
 
         *,
@@ -53,8 +85,9 @@
 
         body {
             min-height: 100vh;
+            transition: background-color 0.3s;
             background:
-                radial-gradient(ellipse 80% 50% at 70% -10%, rgba(255, 255, 255, 0.07), transparent 60%),
+                radial-gradient(ellipse 80% 50% at 70% -10%, var(--glow), transparent 60%),
                 var(--void);
         }
 
@@ -63,7 +96,7 @@
             inset: 0;
             pointer-events: none;
             z-index: 50;
-            opacity: 0.06;
+            opacity: var(--grain-opacity);
             background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
         }
 
@@ -108,6 +141,10 @@
         }
 
         .logo .dollar {
+            background: var(--grad-side);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
             opacity: 0.6;
         }
 
@@ -174,6 +211,49 @@
 
         html[data-lang="pt"] .flag-us {
             display: block !important;
+        }
+
+        /* Botão flutuante de tema (canto inferior direito) */
+        .theme-toggle {
+            position: fixed;
+            right: max(1.5rem, env(safe-area-inset-right, 0px));
+            bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+            z-index: 60;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 1px solid var(--line-strong);
+            background: var(--panel);
+            color: var(--bone);
+            cursor: pointer;
+            display: grid;
+            place-items: center;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+            transition: border-color 0.2s, transform 0.2s, background-color 0.3s;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--smoke);
+            transform: scale(1.06);
+        }
+
+        .theme-toggle svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        /* Mostra o ícone do tema para o qual vai trocar */
+        .icon-sun,
+        .icon-moon {
+            display: none;
+        }
+
+        html:not([data-theme="light"]) .icon-sun {
+            display: block;
+        }
+
+        html[data-theme="light"] .icon-moon {
+            display: block;
         }
 
         /* ---------- Hero ---------- */
@@ -353,7 +433,7 @@
         .timeline li.current::before {
             background: var(--white);
             border-color: var(--white);
-            box-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 12px var(--dot-glow);
         }
 
         .timeline h3 {
@@ -401,7 +481,7 @@
         .cert-fill {
             height: 100%;
             width: var(--cert-progress);
-            background: linear-gradient(90deg, #4a4a50, #ffffff);
+            background: var(--fill);
             transition: width 1.2s cubic-bezier(.2, .7, .2, 1);
         }
 
@@ -545,6 +625,21 @@
 <body>
     <div class="grain" aria-hidden="true"></div>
 
+    <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to light theme"
+        title="Switch to light theme">
+        <!-- Sol: aparece no tema escuro -->
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+            stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4.2" />
+            <path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6" />
+        </svg>
+        <!-- Lua: aparece no tema claro -->
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+            stroke-linejoin="round" aria-hidden="true">
+            <path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z" />
+        </svg>
+    </button>
+
     <div class="wrap">
         <header class="topbar">
             <a href="#" class="avatar" aria-label="Home">
@@ -596,7 +691,7 @@
         <section class="hero">
             <div>
                 <h1 class="headline grad" data-i18n-html="hero.title">Offensive<br>security</h1>
-                <p class="role" data-i18n-html="hero.role">I'm a <strong>junior pentester</strong> who spends the day trying to break web apps before someone with bad intentions does. I find the flaw, prove the impact and hand over the way to fix it.</p>
+                <p class="role" data-i18n-html="hero.role"><strong>junior pentester</strong> who spends the day trying to break web apps before someone with bad intentions does. I find the flaw, prove the impact and hand over the way to fix it.</p>
             </div>
         </section>
 
@@ -665,23 +760,18 @@
 
             <!-- Nomes dos módulos ficam em inglês (são os nomes oficiais do HTB Academy) -->
             <div class="badges">
-                <div class="badge"><img src="badges/academician.png" alt="" loading="lazy"><span>Introduction to Academy</span></div>
-                <div class="badge"><img src="badges/the-eye-that-sees-all.png" alt="" loading="lazy"><span>Network Enumeration with Nmap</span></div>
-                <div class="badge"><img src="badges/airborne-delivery.png" alt="" loading="lazy"><span>File Transfers</span></div>
-                <div class="badge"><img src="badges/combine-the-modules.png" alt="" loading="lazy"><span>Using Metasploit</span></div>
-                <div class="badge"><img src="badges/fuzzing-is-power.png" alt="" loading="lazy"><span>Web Apps with Ffuf</span></div>
-                <div class="badge"><img src="badges/crude-but-effective.png" alt="" loading="lazy"><span>Login Brute Forcing</span></div>
-                <div class="badge"><img src="badges/your-first-battle.png" alt="" loading="lazy"><span>Getting Started</span></div>
-                <div class="badge"><img src="badges/tactical.png" alt="" loading="lazy"><span>Penetration Testing Process</span></div>
-                <div class="badge"><img src="badges/light-in-the-dark.png" alt="" loading="lazy"><span>Vulnerability Assessment</span></div>
-                <div class="badge"><img src="badges/dive-into-requests.png" alt="" loading="lazy"><span>Using Web Proxies</span></div>
-                <div class="badge"><img src="badges/you-need-to-trace-before-you-can-hung.png" alt="" loading="lazy"><span>Footprinting</span></div>
-                <div class="badge"><img src="badges/ghost-in-the-shell.png" alt="" loading="lazy"><span>Shells &amp; Payloads</span></div>
-                <div class="badge"><img src="badges/scan-and-execute.png" alt="" loading="lazy"><span>Attacking Common Services</span></div>
-                <div class="badge"><img src="badges/enumerate-and-attack.png" alt="" loading="lazy"><span>Active Directory Enumeration &amp; Attacks</span></div>
-                <div class="badge"><img src="badges/information-is-not-knowledge-or-is-it.png" alt="" loading="lazy"><span>Information Gathering – Web</span></div>
-                <div class="badge"><img src="badges/grab-the-keys-and-move-laterally.png" alt="" loading="lazy"><span>Password Attacks</span></div>
-                <div class="badge"><img src="badges/explore-deep-space.png" alt="" loading="lazy"><span>Pivoting, Tunneling and Port Forwarding</span></div>
+                <div class="badge"><img src="https://static.hackthebox.com/academy/badges/academician.png" alt="" loading="lazy"><span>Introduction to Academy</span></div>
+                <div class="badge"><img src="https://static.hackthebox.com/academy/badges/the-eye-that-sees-all.png" alt="" loading="lazy"><span>Network Enumeration with Nmap</span></div>
+                <div class="badge"><img src="https://static.hackthebox.com/academy/badges/airborne-delivery.png" alt="" loading="lazy"><span>File Transfers</span></div>
+                <div class="badge"><img src="https://static.hackthebox.com/academy/badges/combine-the-modules.png" alt="" loading="lazy"><span>Using Metasploit</span></div>
+                <div class="badge"><img src="https://static.hackthebox.com/academy/badges/your-first-battle.png" alt="" loading="lazy"><span>Getting Started module completed</span></div>
+                <div class="badge"><img src="https://static.hackthebox.com/academy/badges/tactical.png" alt="" loading="lazy"><span>Penetration Testing Process module completed</span></div>
+                <div class="badge"><img src="https://static.hackthebox.com/academy/badges/light-in-the-dark.png" alt="" loading="lazy"><span>Vulnerability Assessment module completed</span></div>
+                <div class="badge"><img src="https://static.hackthebox.com/academy/badges/you-need-to-trace-before-you-can-hung.png" alt="" loading="lazy"><span>Footprinting module completed</span></div>
+                <div class="badge"><img src="https://static.hackthebox.com/academy/badges/ghost-in-the-shell.png" alt="" loading="lazy"><span>Shells & Payloads module completed</span></div>
+                <div class="badge"><img src="https://static.hackthebox.com/academy/badges/scan-and-execute.png" alt="" loading="lazy"><span>Attacking Common Services module completed</span></div>
+                <div class="badge"><img src="https://static.hackthebox.com/academy/badges/information-is-not-knowledge-or-is-it.png" alt="" loading="lazy"><span>Information Gathering - Web Edition module completed</span></div>
+                <div class="badge"><img src="https://static.hackthebox.com/academy/badges/grab-the-keys-and-move-laterally.png" alt="" loading="lazy"><span>Password Attacks module completed &amp; Payloads</span></div>
                 <!-- copia e cola mais .badge aqui -->
             </div>
         </section>
@@ -691,9 +781,9 @@
                 <div>
                     <h2 class="section-head grad" data-i18n="links.head">how to find me</h2>
                     <ul class="links">
-                        <li><a href="https://github.com/coaglio" target="_blank" rel="noreferrer">github
+                        <li><a href="https://github.com/marcosVScarvalho" target="_blank" rel="noreferrer">github
                                 <small data-i18n="links.github">code & projects</small></a></li>
-                        <li><a href="https://www.linkedin.com/in/guilherme-coaglio-832039286/" target="_blank"
+                        <li><a href="https://www.linkedin.com/in/marcos-vinicius-9735b5317/" target="_blank"
                                 rel="noreferrer">linkedin <small data-i18n="links.linkedin">the formal version</small></a></li>
                     </ul>
                 </div>
@@ -702,7 +792,7 @@
                     <ul class="links">
                         <li><a href="https://blog.i5nipe.com/" target="_blank" rel="noreferrer">i5nipe
                                 <small>blog</small></a></li>
-                        <li><a href="http://hexkaster.com/" target="_blank" rel="noreferrer">hexkaster
+                        <li><a href="https://coaglio.com/" target="_blank" rel="noreferrer">coaglio
                                 <small>blog</small></a></li>
                     </ul>
                 </div>
@@ -750,6 +840,8 @@
                 "friends.head": "blogs worth a visit",
                 "foot.rights": "All rights reserved.",
                 "toggle.label": "Mudar para português",
+                "theme.toLight": "Switch to light theme",
+                "theme.toDark": "Switch to dark theme",
                 "units": ["y", "m", "d", "h", "m", "s"]
             },
             pt: {
@@ -785,6 +877,8 @@
                 "friends.head": "blogs que valem a visita",
                 "foot.rights": "Todos os direitos reservados.",
                 "toggle.label": "Switch to English",
+                "theme.toLight": "Mudar para tema claro",
+                "theme.toDark": "Mudar para tema escuro",
                 "units": ["a", "m", "d", "h", "min", "s"]
             }
         };
@@ -827,7 +921,32 @@
 
             try { localStorage.setItem("lang", lang); } catch (e) { }
             updatePentestTimer();
+            updateThemeLabel();
         }
+
+        /* ---------- Tema claro / escuro ---------- */
+        function currentTheme() {
+            return document.documentElement.dataset.theme === "light" ? "light" : "dark";
+        }
+
+        function updateThemeLabel() {
+            const dict = I18N[currentLang];
+            const label = currentTheme() === "light" ? dict["theme.toDark"] : dict["theme.toLight"];
+            const btn = document.getElementById("theme-toggle");
+            btn.setAttribute("aria-label", label);
+            btn.title = label;
+        }
+
+        function setTheme(theme) {
+            if (theme === "light") document.documentElement.dataset.theme = "light";
+            else delete document.documentElement.dataset.theme;
+            try { localStorage.setItem("theme", theme); } catch (e) { }
+            updateThemeLabel();
+        }
+
+        document.getElementById("theme-toggle").addEventListener("click", () => {
+            setTheme(currentTheme() === "light" ? "dark" : "light");
+        });
 
         document.getElementById("lang-toggle").addEventListener("click", () => {
             setLang(currentLang === "en" ? "pt" : "en");
