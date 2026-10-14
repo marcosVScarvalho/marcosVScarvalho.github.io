@@ -1,203 +1,843 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <title>Marcos</title>
+    <title>Offensive security portfolio</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Press+Start+2P&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        :root {
+            --void: #000000;
+            --panel: #0c0c0e;
+            --line: #1f1f23;
+            --line-strong: #2e2e33;
+            --ash: #6e6e76;
+            --smoke: #a3a3ab;
+            --bone: #ececef;
+            --white: #ffffff;
+
+            --grad: linear-gradient(180deg, #ffffff 0%, #d4d4d8 45%, #7a7a82 100%);
+            --grad-side: linear-gradient(90deg, #ffffff 0%, #9a9aa2 100%);
+
+            --display: "Chakra Petch", "Segoe UI", system-ui, sans-serif;
+            --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+            --mono: "IBM Plex Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+
+            --cert-progress: 0%;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            background: var(--void);
+            color: var(--smoke);
+            font-family: var(--body);
+            font-size: 17px;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(ellipse 80% 50% at 70% -10%, rgba(255, 255, 255, 0.07), transparent 60%),
+                var(--void);
+        }
+
+        .grain {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.06;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+        }
+
+        a {
+            color: inherit;
+        }
+
+        :focus-visible {
+            outline: 2px solid var(--white);
+            outline-offset: 3px;
+        }
+
+        .grad {
+            background: var(--grad);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .wrap {
+            width: min(1120px, 100% - 3rem);
+            margin-inline: auto;
+        }
+
+        /* ---------- Topo ---------- */
+        .topbar {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 1.5rem;
+            padding-block: 1.5rem;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .logo {
+            justify-self: center;
+            font-family: var(--display);
+            font-weight: 700;
+            font-size: 1.15rem;
+            letter-spacing: 0.04em;
+            text-decoration: none;
+        }
+
+        .logo .dollar {
+            opacity: 0.6;
+        }
+
+        .topbar-right {
+            justify-self: end;
+            display: flex;
+            align-items: center;
+            gap: 1.75rem;
+        }
+
+        .topbar nav {
+            display: flex;
+            gap: 1.75rem;
+            font-size: 0.9rem;
+        }
+
+        .topbar nav a {
+            text-decoration: none;
+            color: var(--ash);
+            transition: color 0.2s;
+        }
+
+        .topbar nav a:hover {
+            color: var(--white);
+        }
+
+        /* Botão de idioma: mostra a bandeira do idioma para o qual vai trocar */
+        .lang-toggle {
+            flex-shrink: 0;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 1px solid var(--line-strong);
+            background: var(--panel);
+            cursor: pointer;
+            padding: 0;
+            display: grid;
+            place-items: center;
+            filter: grayscale(0.35);
+            transition: filter 0.2s, border-color 0.2s, transform 0.2s;
+        }
+
+        .lang-toggle:hover {
+            filter: none;
+            border-color: var(--smoke);
+            transform: scale(1.06);
+        }
+
+        .lang-toggle svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .flag-br,
+        .flag-us {
+            display: none !important;
+        }
+
+        html[data-lang="en"] .flag-br {
+            display: block !important;
+        }
+
+        html[data-lang="pt"] .flag-us {
+            display: block !important;
+        }
+
+        /* ---------- Hero ---------- */
+        .hero {
+            padding-block: 5rem 3.5rem;
+        }
+
+        .headline {
+            font-family: var(--display);
+            font-weight: 700;
+            font-size: clamp(2.8rem, 9vw, 7rem);
+            line-height: 0.92;
+            letter-spacing: -0.025em;
+            animation: surface 1.4s cubic-bezier(.2, .7, .2, 1) both;
+        }
+
+        @keyframes surface {
+            from {
+                opacity: 0;
+                filter: blur(14px);
+                letter-spacing: 0.06em;
+            }
+
+            to {
+                opacity: 1;
+                filter: blur(0);
+                letter-spacing: -0.025em;
+            }
+        }
+
+        .role {
+            margin-top: 1.5rem;
+            max-width: 34rem;
+            font-size: 1.15rem;
+            color: var(--smoke);
+        }
+
+        .role strong {
+            font-weight: 500;
+            color: var(--bone);
+        }
+
+        .avatar {
+            justify-self: start;
+            display: block;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 1px solid var(--line-strong);
+            box-shadow: 0 0 0 4px var(--void), 0 0 0 5px var(--line);
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(1) contrast(1.1);
+            transition: filter 0.3s;
+        }
+
+        .avatar:hover img {
+            filter: none;
+        }
+
+        /* ---------- Cronômetro ---------- */
+        .clock {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 0.5rem 1.5rem;
+            padding-block: 1.75rem;
+            border-block: 1px solid var(--line);
+        }
+
+        .clock-label {
+            color: var(--ash);
+            font-size: 0.95rem;
+        }
+
+        .clock-value {
+            font-family: var(--mono);
+            font-size: clamp(1.25rem, 3.4vw, 2rem);
+            font-variant-numeric: tabular-nums;
+            background: var(--grad-side);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* ---------- Seções ---------- */
+        .section {
+            padding-block: 4rem;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .section-head {
+            font-family: var(--display);
+            font-weight: 600;
+            font-size: 1.9rem;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+        }
+
+        .split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+        }
+
+        .now-text {
+            font-size: 1.35rem;
+            line-height: 1.5;
+            color: var(--bone);
+            max-width: 30rem;
+        }
+
+        .facts {
+            margin-top: 2rem;
+            display: grid;
+            gap: 1rem;
+        }
+
+        .facts div {
+            display: grid;
+            grid-template-columns: 8rem 1fr;
+            gap: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--line);
+        }
+
+        .facts dt {
+            color: var(--ash);
+            font-size: 0.9rem;
+        }
+
+        .facts dd {
+            color: var(--bone);
+        }
+
+        .timeline {
+            list-style: none;
+            position: relative;
+            padding-left: 1.75rem;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 4px;
+            top: 0.5rem;
+            bottom: 0.5rem;
+            width: 1px;
+            background: linear-gradient(180deg, var(--line-strong), var(--white));
+        }
+
+        .timeline li {
+            position: relative;
+            padding-bottom: 1.75rem;
+        }
+
+        .timeline li:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline li::before {
+            content: "";
+            position: absolute;
+            left: -1.75rem;
+            top: 0.45rem;
+            width: 9px;
+            height: 9px;
+            border: 1px solid var(--ash);
+            background: var(--void);
+        }
+
+        .timeline li.current::before {
+            background: var(--white);
+            border-color: var(--white);
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
+        }
+
+        .timeline h3 {
+            font-family: var(--display);
+            font-weight: 600;
+            font-size: 1.15rem;
+            color: var(--bone);
+        }
+
+        .timeline p {
+            font-size: 0.95rem;
+            color: var(--ash);
+        }
+
+        /* ---------- Certificação ---------- */
+        .cert {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 2rem;
+            align-items: center;
+            padding: 2rem;
+            background: var(--panel);
+            border: 1px solid var(--line);
+        }
+
+        .cert-name {
+            font-family: var(--display);
+            font-weight: 700;
+            font-size: 2.6rem;
+            line-height: 1;
+        }
+
+        .cert-desc {
+            font-size: 0.95rem;
+            color: var(--ash);
+            margin-bottom: 0.9rem;
+        }
+
+        .cert-bar {
+            height: 6px;
+            background: var(--line);
+            overflow: hidden;
+        }
+
+        .cert-fill {
+            height: 100%;
+            width: var(--cert-progress);
+            background: linear-gradient(90deg, #4a4a50, #ffffff);
+            transition: width 1.2s cubic-bezier(.2, .7, .2, 1);
+        }
+
+        .cert-pct {
+            font-family: var(--mono);
+            font-size: 1.6rem;
+            font-variant-numeric: tabular-nums;
+            color: var(--white);
+            min-width: 5ch;
+            text-align: right;
+        }
+
+        /* ---------- Badges ---------- */
+        .badges-intro {
+            margin-top: -1.25rem;
+            margin-bottom: 2rem;
+            color: var(--ash);
+            font-size: 0.95rem;
+        }
+
+        .badges {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            border-top: 1px solid var(--line);
+            border-left: 1px solid var(--line);
+        }
+
+        .badge {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.9rem;
+            padding: 1.5rem 1rem;
+            border-right: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
+            text-align: center;
+        }
+
+        .badge img {
+            width: 64px;
+            height: 64px;
+            object-fit: contain;
+            filter: grayscale(1) brightness(1.1);
+            opacity: 0.75;
+            transition: filter 0.3s, opacity 0.3s;
+        }
+
+        .badge:hover img {
+            filter: none;
+            opacity: 1;
+        }
+
+        .badge span {
+            font-size: 0.82rem;
+            line-height: 1.35;
+            color: var(--smoke);
+        }
+
+        /* ---------- Links ---------- */
+        .links {
+            list-style: none;
+        }
+
+        .links a {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding-block: 1rem;
+            border-bottom: 1px solid var(--line);
+            text-decoration: none;
+            font-family: var(--display);
+            font-weight: 600;
+            font-size: 1.3rem;
+            color: var(--bone);
+            transition: color 0.2s, padding-left 0.2s;
+        }
+
+        .links a:hover {
+            color: var(--white);
+            padding-left: 0.5rem;
+        }
+
+        .links small {
+            font-family: var(--body);
+            font-weight: 400;
+            font-size: 0.85rem;
+            color: var(--ash);
+        }
+
+        .foot {
+            padding-block: 2.5rem;
+            font-size: 0.85rem;
+            color: var(--ash);
+        }
+
+        @media (max-width: 820px) {
+            .hero {
+                padding-block: 3rem 2.5rem;
+            }
+
+            .avatar {
+                width: 52px;
+                height: 52px;
+            }
+
+            .split {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .cert {
+                grid-template-columns: 1fr;
+                gap: 1.25rem;
+            }
+
+            .cert-pct {
+                text-align: left;
+            }
+
+            .topbar nav {
+                display: none;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation: none !important;
+                transition: none !important;
+            }
+
+            html {
+                scroll-behavior: auto;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <div class="grain"></div>
+    <div class="grain" aria-hidden="true"></div>
 
-    <main class="frame">
-        <header class="hero">
-                <div class="brand">
-                <span class="logo">M<span class="dollar">$$</span>V</span>
-                <span class="tagline"></span>
-            </div>
+    <div class="wrap">
+        <header class="topbar">
+            <a href="#" class="avatar" aria-label="Home">
+                <img src="joaofrango.jpg" alt="Avatar" data-i18n-alt="hero.avatar">
+            </a>
 
-            <div class="joaofrango">
-                <img src="joaofrango.jpg" alt="joaofrango" class="skull">
+            <a href="#" class="logo grad" aria-label="Home">M<span class="dollar">$$</span>V</a>
+
+            <div class="topbar-right">
+                <nav aria-label="Sections">
+                    <a href="#now" data-i18n="nav.now">now</a>
+                    <a href="#certs" data-i18n="nav.certs">certs</a>
+                    <a href="#htb-badges" data-i18n="nav.badges">badges</a>
+                    <a href="#links" data-i18n="nav.contact">contact</a>
+                </nav>
+
+                <button class="lang-toggle" id="lang-toggle" type="button" aria-label="Mudar para português"
+                    title="Mudar para português">
+                    <!-- Bandeira do Brasil (aparece quando o site está em inglês) -->
+                    <svg class="flag-br" viewBox="0 0 60 60" aria-hidden="true">
+                        <rect width="60" height="60" fill="#009c3b" />
+                        <polygon points="30,9 55,30 30,51 5,30" fill="#ffdf00" />
+                        <circle cx="30" cy="30" r="11.5" fill="#002776" />
+                        <path d="M18.8 27.6 Q30 23.5 41.4 31.2" stroke="#ffffff" stroke-width="2.2" fill="none" />
+                    </svg>
+                    <!-- Bandeira dos EUA (aparece quando o site está em português) -->
+                    <svg class="flag-us" viewBox="0 0 60 60" aria-hidden="true">
+                        <rect width="60" height="60" fill="#b22234" />
+                        <g fill="#ffffff">
+                            <rect y="4.62" width="60" height="4.62" />
+                            <rect y="13.85" width="60" height="4.62" />
+                            <rect y="23.08" width="60" height="4.62" />
+                            <rect y="32.31" width="60" height="4.62" />
+                            <rect y="41.54" width="60" height="4.62" />
+                            <rect y="50.77" width="60" height="4.62" />
+                        </g>
+                        <rect width="30" height="32.3" fill="#3c3b6e" />
+                        <g fill="#ffffff">
+                            <circle cx="5" cy="5" r="1.3" /><circle cx="12.5" cy="5" r="1.3" /><circle cx="20" cy="5" r="1.3" /><circle cx="27" cy="5" r="1.3" />
+                            <circle cx="8.7" cy="11.5" r="1.3" /><circle cx="16.2" cy="11.5" r="1.3" /><circle cx="23.7" cy="11.5" r="1.3" />
+                            <circle cx="5" cy="18" r="1.3" /><circle cx="12.5" cy="18" r="1.3" /><circle cx="20" cy="18" r="1.3" /><circle cx="27" cy="18" r="1.3" />
+                            <circle cx="8.7" cy="24.5" r="1.3" /><circle cx="16.2" cy="24.5" r="1.3" /><circle cx="23.7" cy="24.5" r="1.3" />
+                        </g>
+                    </svg>
+                </button>
             </div>
         </header>
 
-        <div class="main-grid">
-            <div class="left-column">
-                <section class="card" id="certs">
-                    <h2>certs</h2>
-
-                    <div class="cert-item">
-                        <div class="cert-logo"></div>
-
-                        <div class="cert-meta">
-                            <span class="cert-name">CPTS</span>
-                            <div class="cert-progress-row">
-                                <div class="cert-progress-bar">
-                                    <div class="cert-progress-fill"></div>
-                                </div>
-                                <span class="cert-progress-text" id="cert-progress-text">0%</span>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="card" id="friends">
-                    <h2>visit this others too</h2>
-                    <ul class="link-list">
-                        <li><a href="https://blog.i5nipe.com/" target="_blank" rel="noreferrer">i5nipe's blog</a></li>
-                        <li><a href="http://hexkaster.com/" target="_blank" rel="noreferrer">hexkaster's blog</a></li>
-                    </ul>
-                </section>
+        <section class="hero">
+            <div>
+                <h1 class="headline grad" data-i18n-html="hero.title">Offensive<br>security</h1>
+                <p class="role" data-i18n-html="hero.role">I'm a <strong>junior pentester</strong> who spends the day trying to break web apps before someone with bad intentions does. I find the flaw, prove the impact and hand over the way to fix it.</p>
             </div>
+        </section>
 
-            <div class="right-column">
-                <section class="card now" id="now">
-                    <h2>now</h2>
-                    <p>pentesting, threat hunting and trying not to dodge the next cert.</p>
-                </section>
-
-                <section class="grid">
-                    <article class="card">
-                        <h3>track record</h3>
-                        <p>
-                            college (didn't learn much), 1 year as cyber/threat intern.<br>
-                            time being a pentester: <span id="pentest-live"></span>
-                        </p>
-                    </article>
-
-                    <article class="card">
-                        <h3>what i poke</h3>
-                        <p>web apps :^)</p>
-                    </article>
-
-                    <article class="card">
-                        <h3>this spot</h3>
-                        <p>idk just a place to add somethings i like</p>
-                    </article>
-                </section>
-
-                <section class="card" id="links">
-                    <h2>how to find me</h2>
-                    <ul class="link-list">
-                        <li><a href="https://github.com/coaglio" target="_blank" rel="noreferrer">github</a></li>
-                        <li><a href="https://www.linkedin.com/in/guilherme-coaglio-832039286/" target="_blank"
-                                rel="noreferrer">linkedin</a></li>
-                    </ul>
-                </section>
-            </div>
+        <div class="clock">
+            <span class="clock-label" data-i18n="clock.label">time on red team</span>
+            <span class="clock-value" id="pentest-live">—</span>
         </div>
-        <section class="card" id="htb-badges">
-            <h2>htb badges</h2>
 
-            <div class="badges-container">
-                <div class="badge-card">
-                    <img src="badges/academician.png" alt="Enumerating & Attacking Active Directory badge">
-                    <span>Introduction to Academy</span>
+        <section class="section" id="now">
+            <div class="split">
+                <div>
+                    <h2 class="section-head grad" data-i18n="now.head">now</h2>
+                    <p class="now-text" data-i18n="now.text">Running pentests day to day and writing Python scripts to automate the boring, repetitive stuff. Not a dev yet, but my terminal is already grateful.</p>
+
+                    <dl class="facts">
+                        <div>
+                            <dt data-i18n="facts.pokeLabel">what i poke</dt>
+                            <dd data-i18n="facts.poke">Web apps, end to end: login, permissions, APIs and that forgotten form in the corner.</dd>
+                        </div>
+                        <div>
+                            <dt data-i18n="facts.spotLabel">this spot</dt>
+                            <dd data-i18n="facts.spot">My résumé without the tie. Where I keep my wins and what I pick up along the way.</dd>
+                        </div>
+                    </dl>
                 </div>
 
-                <div class="badge-card">
-                    <img src="badges/the-eye-that-sees-all.png" alt="Web Fundamentals badge">
-                    <span>Network Enumeration with Nmap</span>
+                <div>
+                    <h2 class="section-head grad" data-i18n="track.head">track record</h2>
+                    <ol class="timeline">
+                        <li>
+                            <h3 data-i18n="track.college">College</h3>
+                            <p data-i18n="track.collegeNote">Where I got the basics. The rest came from practice.</p>
+                        </li>
+                        <li>
+                            <h3 data-i18n="track.intern">Cyber / red team intern</h3>
+                            <p data-i18n="track.internNote">One year on the offensive side, learning to think like an attacker.</p>
+                        </li>
+                        <li class="current">
+                            <h3 data-i18n="track.pentester">Junior Pentester</h3>
+                            <p data-i18n="track.pentesterNote">Since May 2026. Now it's official.</p>
+                        </li>
+                    </ol>
                 </div>
+            </div>
+        </section>
 
-                <div class="badge-card">
-                    <img src="badges/airborne-delivery.png" alt="Network Enumeration badge">
-                    <span>File Transfers</span>
+        <section class="section" id="certs">
+            <h2 class="section-head grad" data-i18n="certs.head">certs</h2>
+
+            <div class="cert">
+                <span class="cert-name grad">CPTS</span>
+                <div>
+                    <p class="cert-desc" data-i18n="certs.desc">HTB Certified Penetration Testing Specialist. In progress, one module at a time.</p>
+                    <div class="cert-bar" role="progressbar" aria-label="CPTS" aria-valuemin="0" aria-valuemax="100"
+                        aria-valuenow="0" id="cert-bar">
+                        <div class="cert-fill"></div>
+                    </div>
                 </div>
+                <span class="cert-pct" id="cert-progress-text">0%</span>
+            </div>
+        </section>
 
-                <div class="badge-card">
-                    <img src="badges/combine-the-modules.png" alt="Network Enumeration badge">
-                    <span>Using Metasploit</span>
+        <section class="section" id="htb-badges">
+            <h2 class="section-head grad" data-i18n="badges.head">htb badges</h2>
+            <p class="badges-intro" data-i18n="badges.intro">HTB Academy modules I've already wrapped up on the CPTS path.</p>
+
+            <!-- Nomes dos módulos ficam em inglês (são os nomes oficiais do HTB Academy) -->
+            <div class="badges">
+                <div class="badge"><img src="badges/academician.png" alt="" loading="lazy"><span>Introduction to Academy</span></div>
+                <div class="badge"><img src="badges/the-eye-that-sees-all.png" alt="" loading="lazy"><span>Network Enumeration with Nmap</span></div>
+                <div class="badge"><img src="badges/airborne-delivery.png" alt="" loading="lazy"><span>File Transfers</span></div>
+                <div class="badge"><img src="badges/combine-the-modules.png" alt="" loading="lazy"><span>Using Metasploit</span></div>
+                <div class="badge"><img src="badges/fuzzing-is-power.png" alt="" loading="lazy"><span>Web Apps with Ffuf</span></div>
+                <div class="badge"><img src="badges/crude-but-effective.png" alt="" loading="lazy"><span>Login Brute Forcing</span></div>
+                <div class="badge"><img src="badges/your-first-battle.png" alt="" loading="lazy"><span>Getting Started</span></div>
+                <div class="badge"><img src="badges/tactical.png" alt="" loading="lazy"><span>Penetration Testing Process</span></div>
+                <div class="badge"><img src="badges/light-in-the-dark.png" alt="" loading="lazy"><span>Vulnerability Assessment</span></div>
+                <div class="badge"><img src="badges/dive-into-requests.png" alt="" loading="lazy"><span>Using Web Proxies</span></div>
+                <div class="badge"><img src="badges/you-need-to-trace-before-you-can-hung.png" alt="" loading="lazy"><span>Footprinting</span></div>
+                <div class="badge"><img src="badges/ghost-in-the-shell.png" alt="" loading="lazy"><span>Shells &amp; Payloads</span></div>
+                <div class="badge"><img src="badges/scan-and-execute.png" alt="" loading="lazy"><span>Attacking Common Services</span></div>
+                <div class="badge"><img src="badges/enumerate-and-attack.png" alt="" loading="lazy"><span>Active Directory Enumeration &amp; Attacks</span></div>
+                <div class="badge"><img src="badges/information-is-not-knowledge-or-is-it.png" alt="" loading="lazy"><span>Information Gathering – Web</span></div>
+                <div class="badge"><img src="badges/grab-the-keys-and-move-laterally.png" alt="" loading="lazy"><span>Password Attacks</span></div>
+                <div class="badge"><img src="badges/explore-deep-space.png" alt="" loading="lazy"><span>Pivoting, Tunneling and Port Forwarding</span></div>
+                <!-- copia e cola mais .badge aqui -->
+            </div>
+        </section>
+
+        <section class="section" id="links">
+            <div class="split">
+                <div>
+                    <h2 class="section-head grad" data-i18n="links.head">how to find me</h2>
+                    <ul class="links">
+                        <li><a href="https://github.com/coaglio" target="_blank" rel="noreferrer">github
+                                <small data-i18n="links.github">code & projects</small></a></li>
+                        <li><a href="https://www.linkedin.com/in/guilherme-coaglio-832039286/" target="_blank"
+                                rel="noreferrer">linkedin <small data-i18n="links.linkedin">the formal version</small></a></li>
+                    </ul>
                 </div>
-
-                <div class="badge-card">
-                    <img src="badges/fuzzing-is-power.png" alt="Network Enumeration badge">
-                    <span>Web Apps with Ffufy</span>
+                <div>
+                    <h2 class="section-head grad" data-i18n="friends.head">blogs worth a visit</h2>
+                    <ul class="links">
+                        <li><a href="https://blog.i5nipe.com/" target="_blank" rel="noreferrer">i5nipe
+                                <small>blog</small></a></li>
+                        <li><a href="http://hexkaster.com/" target="_blank" rel="noreferrer">hexkaster
+                                <small>blog</small></a></li>
+                    </ul>
                 </div>
-
-                <div class="badge-card">
-                    <img src="badges/crude-but-effective.png" alt="Network Enumeration badge">
-                    <span>Login Brute Forcing</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="badges/your-first-battle.png" alt="Network Enumeration badge">
-                    <span>Getting Started</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="badges/tactical.png" alt="Network Enumeration badge">
-                    <span>Penetration Testing Process</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="badges/light-in-the-dark.png" alt="Network Enumeration badge">
-                    <span>Vulnerability Assessment</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="badges/dive-into-requests.png" alt="Network Enumeration badge">
-                    <span>Using Web Proxies</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="badges/you-need-to-trace-before-you-can-hung.png" alt="Network Enumeration badge">
-                    <span>Footprint</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="badges/ghost-in-the-shell.png" alt="Network Enumeration badge">
-                    <span>Shells & Payloads</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="badges/scan-and-execute.png" alt="Network Enumeration badge">
-                    <span>Attacking Common Services</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="badges/enumerate-and-attack.png" alt="Network Enumeration badge">
-                    <span>Active Directory Enumeration & Attacks</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="badges/information-is-not-knowledge-or-is-it.png" alt="Network Enumeration badge">
-                    <span>Information Gathering - Web</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="badges/grab-the-keys-and-move-laterally.png" alt="Network Enumeration badge">
-                    <span>Password Attacks</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="badges/explore-deep-space.png" alt="Network Enumeration badge">
-                    <span>Pivoting, Tunneling and Port Forwarding</span>
-                </div>
-
-
-                <!-- copia e cola mais badge-card -->
             </div>
         </section>
 
         <footer class="foot">
-            <p>&copy; 2025 coaglio. All rights reserved.</p>
+            <p>&copy; <span id="year">2025</span> M$$V. <span data-i18n="foot.rights">All rights reserved.</span></p>
         </footer>
-    </main>
+    </div>
 
     <script>
-        const certProgress = 48;
+        /* ---------- Traduções ---------- */
+        const I18N = {
+            en: {
+                "meta.title": "Offensive security portfolio",
+                "nav.now": "now",
+                "nav.certs": "certs",
+                "nav.badges": "badges",
+                "nav.contact": "contact",
+                "hero.title": "Offensive<br>security",
+                "hero.role": "I'm a <strong>junior pentester</strong> who spends the day trying to break web apps before someone with bad intentions does. I find the flaw, prove the impact and hand over the way to fix it.",
+                "hero.avatar": "Avatar",
+                "clock.label": "time on red team",
+                "now.head": "now",
+                "now.text": "Running pentests day to day and writing Python scripts to automate the boring, repetitive stuff. Not a dev yet, but my terminal is already grateful.",
+                "facts.pokeLabel": "what i poke",
+                "facts.poke": "Web apps, end to end: login, permissions, APIs and that forgotten form in the corner.",
+                "facts.spotLabel": "this spot",
+                "facts.spot": "My résumé without the tie. Where I keep my wins and what I pick up along the way.",
+                "track.head": "track record",
+                "track.college": "College",
+                "track.collegeNote": "Where I got the basics. The rest came from practice.",
+                "track.intern": "Cyber / red team intern",
+                "track.internNote": "One year on the offensive side, learning to think like an attacker.",
+                "track.pentester": "Junior Pentester",
+                "track.pentesterNote": "Since May 2026. Now it's official.",
+                "certs.head": "certs",
+                "certs.desc": "HTB Certified Penetration Testing Specialist. In progress, one module at a time.",
+                "badges.head": "htb badges",
+                "badges.intro": "HTB Academy modules I've already wrapped up on the CPTS path.",
+                "links.head": "how to find me",
+                "links.github": "code & projects",
+                "links.linkedin": "the formal version",
+                "friends.head": "blogs worth a visit",
+                "foot.rights": "All rights reserved.",
+                "toggle.label": "Mudar para português",
+                "units": ["y", "m", "d", "h", "m", "s"]
+            },
+            pt: {
+                "meta.title": "Portfólio de segurança ofensiva",
+                "nav.now": "agora",
+                "nav.certs": "certificações",
+                "nav.badges": "badges",
+                "nav.contact": "contato",
+                "hero.title": "Segurança<br>ofensiva",
+                "hero.role": "Sou <strong>pentester júnior</strong> e passo os dias tentando quebrar aplicações web antes que alguém mal-intencionado faça isso. Acho a falha, provo o impacto e entrego o caminho pra corrigir.",
+                "hero.avatar": "Avatar",
+                "clock.label": "tempo no red team",
+                "now.head": "agora",
+                "now.text": "Rodando pentest no dia a dia e escrevendo uns scripts em Python pra automatizar o que é chato e repetitivo. Ainda não sou dev, mas meu terminal já agradece.",
+                "facts.pokeLabel": "o que eu cutuco",
+                "facts.poke": "Aplicações web de ponta a ponta: login, permissões, APIs e aquele formulário esquecido num canto.",
+                "facts.spotLabel": "este cantinho",
+                "facts.spot": "Meu currículo sem gravata. Onde vou guardando as conquistas e o que aprendo pelo caminho.",
+                "track.head": "trajetória",
+                "track.college": "Faculdade",
+                "track.collegeNote": "Onde peguei a base. O resto veio na prática.",
+                "track.intern": "Estágio em cyber / red team",
+                "track.internNote": "Um ano do lado ofensivo, aprendendo a pensar como atacante.",
+                "track.pentester": "Pentester Júnior",
+                "track.pentesterNote": "Desde maio de 2026. Agora é oficial.",
+                "certs.head": "certificações",
+                "certs.desc": "HTB Certified Penetration Testing Specialist. Em andamento, um módulo por vez.",
+                "badges.head": "badges htb",
+                "badges.intro": "Módulos do HTB Academy que já fechei na trilha do CPTS.",
+                "links.head": "onde me encontrar",
+                "links.github": "código e projetos",
+                "links.linkedin": "a versão formal",
+                "friends.head": "blogs que valem a visita",
+                "foot.rights": "Todos os direitos reservados.",
+                "toggle.label": "Switch to English",
+                "units": ["a", "m", "d", "h", "min", "s"]
+            }
+        };
 
-        document.documentElement.style.setProperty("--cert-progress", certProgress + "%");
-        document.getElementById("cert-progress-text").textContent = certProgress + "%";
+        let currentLang = "en";
+
+        function detectLang() {
+            try {
+                const saved = localStorage.getItem("lang");
+                if (saved === "pt" || saved === "en") return saved;
+            } catch (e) { }
+            return (navigator.language || "").toLowerCase().startsWith("pt") ? "pt" : "en";
+        }
+
+        function setLang(lang) {
+            const dict = I18N[lang];
+            currentLang = lang;
+
+            document.documentElement.lang = lang === "pt" ? "pt-BR" : "en";
+            document.documentElement.dataset.lang = lang;
+            document.title = dict["meta.title"];
+
+            document.querySelectorAll("[data-i18n]").forEach((el) => {
+                const v = dict[el.dataset.i18n];
+                if (v !== undefined) el.textContent = v;
+            });
+            // Somente chaves estáticas do próprio dicionário usam innerHTML
+            document.querySelectorAll("[data-i18n-html]").forEach((el) => {
+                const v = dict[el.dataset.i18nHtml];
+                if (v !== undefined) el.innerHTML = v;
+            });
+            document.querySelectorAll("[data-i18n-alt]").forEach((el) => {
+                const v = dict[el.dataset.i18nAlt];
+                if (v !== undefined) el.alt = v;
+            });
+
+            const btn = document.getElementById("lang-toggle");
+            btn.setAttribute("aria-label", dict["toggle.label"]);
+            btn.title = dict["toggle.label"];
+
+            try { localStorage.setItem("lang", lang); } catch (e) { }
+            updatePentestTimer();
+        }
+
+        document.getElementById("lang-toggle").addEventListener("click", () => {
+            setLang(currentLang === "en" ? "pt" : "en");
+        });
+
+        /* ---------- Cronômetro ---------- */
+        const PENTEST_START = new Date(2025, 3, 28); // 28/04/2025 (mês começa em 0)
 
         function updatePentestTimer() {
-            const start = new Date(2025, 3, 28);
+            const start = PENTEST_START;
             const now = new Date();
 
             let years = now.getFullYear() - start.getFullYear();
@@ -207,72 +847,49 @@
             let minutes = now.getMinutes() - start.getMinutes();
             let seconds = now.getSeconds() - start.getSeconds();
 
-            if (seconds < 0) {
-                seconds += 60;
-                minutes--;
-            }
-
-            if (minutes < 0) {
-                minutes += 60;
-                hours--;
-            }
-
-            if (hours < 0) {
-                hours += 24;
-                days--;
-            }
-
+            if (seconds < 0) { seconds += 60; minutes--; }
+            if (minutes < 0) { minutes += 60; hours--; }
+            if (hours < 0) { hours += 24; days--; }
             if (days < 0) {
-                const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
-                days += prevMonth.getDate();
+                days += new Date(now.getFullYear(), now.getMonth(), 0).getDate();
                 months--;
             }
+            if (months < 0) { months += 12; years--; }
 
-            if (months < 0) {
-                months += 12;
-                years--;
-            }
-
-            const format = (v) => (v < 10 ? "0" + v : v);
-
-            const display =
-                `${years}y ` +
-                `${months}m ` +
-                `${days}d ` +
-                `${format(hours)}h ` +
-                `${format(minutes)}m ` +
-                `${format(seconds)}s`;
-
-            document.getElementById("pentest-live").textContent = display;
+            const u = I18N[currentLang].units;
+            const p = (v) => String(v).padStart(2, "0");
+            document.getElementById("pentest-live").textContent =
+                `${years}${u[0]} ${p(months)}${u[1]} ${p(days)}${u[2]} ${p(hours)}${u[3]} ${p(minutes)}${u[4]} ${p(seconds)}${u[5]}`;
         }
 
-        updatePentestTimer();
+        setLang(detectLang());
         setInterval(updatePentestTimer, 1000);
-    </script>
 
-    <script>
-        const DEFAULT_CERT_PROGRESS = 26.3;
+        /* ---------- Progresso do CPTS ---------- */
+        const DEFAULT_CERT_PROGRESS = 46;
 
         function applyCertProgress(pct) {
             const clean = Math.max(0, Math.min(100, Number(pct) || 0));
             document.documentElement.style.setProperty("--cert-progress", clean + "%");
-            const textEl = document.getElementById("cert-progress-text");
-            if (textEl) textEl.textContent = clean + "%";
+            document.getElementById("cert-progress-text").textContent = clean + "%";
+            document.getElementById("cert-bar").setAttribute("aria-valuenow", clean);
         }
 
-        applyCertProgress(DEFAULT_CERT_PROGRESS);
+        requestAnimationFrame(() => applyCertProgress(DEFAULT_CERT_PROGRESS));
 
-        fetch("https://api.github.com/repos/coaglio/coaglio.github.io/m3t4.md")
-            .then(r => r.json())
-            .then(data => {
-                if (!data.content) return;
-                const decoded = atob(data.content);
-                const match = decoded.match(/M3T4:\s*(\d{1,3})/i);
+        // Lê "M3T4: <numero>" do arquivo m3t4.md no repositório
+        fetch("https://api.github.com/repos/coaglio/coaglio.github.io/contents/m3t4.md")
+            .then((r) => (r.ok ? r.json() : null))
+            .then((data) => {
+                if (!data || !data.content) return;
+                const decoded = atob(data.content.replace(/\s/g, ""));
+                const match = decoded.match(/M3T4:\s*(\d{1,3}(?:\.\d+)?)/i);
                 if (match) applyCertProgress(match[1]);
             })
             .catch(() => { });
-    </script>
 
+        document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
 </body>
 
 </html>
