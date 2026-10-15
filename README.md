@@ -1,18 +1,15 @@
-# coaglio site
+# M$$V — Portfólio
 
-Personal website built with pure HTML and CSS, featuring custom animations, a dark aesthetic, and a fully responsive layout.
+Portfólio pessoal de um pentester júnior com foco em aplicações web e red team. O site reúne trajetória profissional e certificações em andamento.
 
-This project does not rely on any external frameworks or theme engines. All layout, styling, and motion effects were handcrafted to maintain full control over the visual identity and performance.
 
-The main structure of the project is as follows:
+## Funcionalidades
 
-```
-❯ tree  
-.
-├── CNAME
-├── cpts.png
-├── index.html
-├── README.md
-├── skull.gif
-└── styles.css
-```
+- **Bilíngue (PT-BR / EN):** o botão com a bandeira no topo troca o idioma de todo o site. Na primeira visita, o idioma segue o do navegador.
+- **Tema claro e escuro:** o botão flutuante no canto inferior direito alterna entre os temas. O escuro é o padrão.
+- **Cronômetro de experiência:** mostra em tempo real há quanto tempo atuo em red team.
+- **Progresso de certificação:** barra de progresso do CPTS, que pode ser atualizada sem mexer no HTML (veja abaixo).
+- **Badges do HTB Academy:** grade com os módulos concluídos na trilha do CPTS.
+- **Responsivo e acessível:** layout adaptado para celular, navegação por teclado e respeito à preferência de movimento reduzido do sistema.
+
+As escolhas de idioma e de tema ficam salvas no navegador do visitante.
